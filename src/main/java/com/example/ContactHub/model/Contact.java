@@ -24,7 +24,7 @@ public class Contact {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "created_at")
+    @Column(name = "update_at")
     private LocalDateTime updateAt;
 
     // Автоматическое заполнение дат
