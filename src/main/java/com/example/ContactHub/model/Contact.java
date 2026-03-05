@@ -20,25 +20,25 @@ public class Contact {
     @Column(nullable = false, length = 100)
     private String email;
 
-    // дата создания и обновления
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+//    // дата создания и обновления
+//    @Column(name = "created_at", updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @Column(name = "update_at")
+//    private LocalDateTime updateAt;
+//
+//    // Автоматическое заполнение дат
+//    @PrePersist
+//    protected void onCreate() {
+//        createdAt = LocalDateTime.now();
+//        updateAt = LocalDateTime.now();
+//    }
+//
+//    @PreUpdate
+//    protected void onUpdate() {
+//        updateAt = LocalDateTime.now();
+//    }
 
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
-
-    // Автоматическое заполнение дат
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updateAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updateAt = LocalDateTime.now();
-    }
-
-    @OneToOne(mappedBy = "contact")
-    private Client client;
+//    @OneToOne(mappedBy = "contact")
+//    private Client client;
 }

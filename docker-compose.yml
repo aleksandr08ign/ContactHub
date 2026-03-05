@@ -1,0 +1,51 @@
+
+services:
+  # База данных PostgreSQL
+  postgres_db:
+    image: postgres:16-alpine
+    container_name: contacthub-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - contacthub-network
+
+  # Spring Boot приложение
+  contacthub-app:
+    build: .
+    container_name: contacthub-app
+    restart: unless-stopped
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_MVC_PATHMATCH_MATCHING_STRATEGY: ant_path_matcher
+    ports:
+      - "8080:8080"
+    networks:
+      - contacthub-network
+
+volumes:
+  postgres_data:
+    name: contacthub-postgres-data
+
+networks:
+  contacthub-network:
+    name: contacthub-network
+    driver: bridge
