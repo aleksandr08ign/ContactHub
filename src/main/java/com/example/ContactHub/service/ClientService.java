@@ -1,6 +1,7 @@
 package com.example.ContactHub.service;
 
 import com.example.ContactHub.dto.ClientCreateDto;
+import com.example.ContactHub.exception.ResourceNotFoundException;
 import com.example.ContactHub.model.Client;
 import com.example.ContactHub.model.Contact;
 import com.example.ContactHub.repository.ClientRepository;
@@ -35,7 +36,7 @@ public class ClientService {
         // Если передан contactId, находим контакт и привязываем
         if (clientDto.getContactId() != null) {
             Contact contact = contactService.getContactById(clientDto.getContactId())
-                    .orElseThrow(() -> new RuntimeException("Контакт не найден с id: " + clientDto.getContactId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Контакт не найден с id: " + clientDto.getContactId()));
             client.setContact(contact);
         }
         return clientRepository.save(client);
@@ -64,7 +65,7 @@ public class ClientService {
     @Transactional
     public Client updateClient(Long id, Client clientDetails) {
         Client existingClient = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Клиент не найден с id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Клиент не найден с id: " + id));
 
         // Обновляем основные поля
         if (clientDetails.getName() != null) {
@@ -100,7 +101,7 @@ public class ClientService {
     @Transactional
     public void deleteClient(Long id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Клиент не найден с id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Клиент не найден с id: " + id));
 
         // Решаем, что делать с контактом при удалении клиента
         if (client.getContact() != null) {
